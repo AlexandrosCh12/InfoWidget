@@ -1,0 +1,4 @@
+[[permission]]
+identifier = "allow-minimize-to-tray"
+description = "Hide the main window and show the system tray icon."
+commands.allow = ["minimize_to_tray"]

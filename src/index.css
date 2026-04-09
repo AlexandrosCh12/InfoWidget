@@ -1,0 +1,155 @@
+@import "tailwindcss";
+
+@theme {
+  --color-accent-blue: #4b8df8;
+  --color-accent-green: #2edba8;
+  --color-accent-red: #f05252;
+  --color-accent-amber: #f7a928;
+}
+
+:root {
+  /* Must match tokens.radius.xl / AppShell widget shell */
+  --iw-shell-radius: 18px;
+}
+
+:root,
+.theme-dark {
+  --iw-bg-primary: #08080d;
+  --iw-bg-secondary: #0e0e16;
+  --iw-bg-card: rgba(14, 14, 22, 0.72);
+  --iw-bg-glass: rgba(12, 12, 20, 0.68);
+  --iw-bg-glass-hover: rgba(18, 18, 30, 0.78);
+  --iw-bg-glass-subtle: rgba(255, 255, 255, 0.025);
+  --iw-bg-glass-subtle-hover: rgba(255, 255, 255, 0.045);
+  --iw-border-subtle: rgba(255, 255, 255, 0.055);
+  --iw-border-hover: rgba(255, 255, 255, 0.1);
+  --iw-border-active: rgba(255, 255, 255, 0.16);
+  --iw-border-divider: rgba(255, 255, 255, 0.04);
+  --iw-text-primary: rgba(255, 255, 255, 0.93);
+  --iw-text-secondary: rgba(255, 255, 255, 0.52);
+  --iw-text-muted: rgba(255, 255, 255, 0.3);
+  --iw-text-ghost: rgba(255, 255, 255, 0.18);
+  --iw-accent-blue: #4b8df8;
+  --iw-accent-blue-glow: rgba(75, 141, 248, 0.22);
+  --iw-accent-blue-soft: rgba(75, 141, 248, 0.08);
+  --iw-accent-green: #2edba8;
+  --iw-accent-green-glow: rgba(46, 219, 168, 0.22);
+  --iw-accent-green-soft: rgba(46, 219, 168, 0.07);
+  --iw-accent-red: #f05252;
+  --iw-accent-red-glow: rgba(240, 82, 82, 0.22);
+  --iw-accent-amber: #f7a928;
+  --iw-accent-amber-glow: rgba(247, 169, 40, 0.22);
+  --iw-status-live: #2edba8;
+  --iw-status-live-glow: rgba(46, 219, 168, 0.35);
+  --iw-shell-grad-from: rgba(16, 16, 28, 0.96);
+  --iw-shell-grad-to: rgba(10, 10, 16, 0.94);
+}
+
+.theme-light {
+  --iw-bg-primary: #f3f6ff;
+  --iw-bg-secondary: #e8eefc;
+  --iw-bg-card: rgba(255, 255, 255, 0.78);
+  --iw-bg-glass: rgba(255, 255, 255, 0.72);
+  --iw-bg-glass-hover: rgba(255, 255, 255, 0.84);
+  --iw-bg-glass-subtle: rgba(15, 23, 42, 0.04);
+  --iw-bg-glass-subtle-hover: rgba(15, 23, 42, 0.08);
+  --iw-border-subtle: rgba(15, 23, 42, 0.12);
+  --iw-border-hover: rgba(15, 23, 42, 0.2);
+  --iw-border-active: rgba(15, 23, 42, 0.28);
+  --iw-border-divider: rgba(15, 23, 42, 0.1);
+  --iw-text-primary: rgba(15, 23, 42, 0.92);
+  --iw-text-secondary: rgba(15, 23, 42, 0.66);
+  --iw-text-muted: rgba(15, 23, 42, 0.5);
+  --iw-text-ghost: rgba(15, 23, 42, 0.36);
+  --iw-accent-blue: #2f6de6;
+  --iw-accent-blue-glow: rgba(47, 109, 230, 0.3);
+  --iw-accent-blue-soft: rgba(47, 109, 230, 0.14);
+  --iw-accent-green: #14b889;
+  --iw-accent-green-glow: rgba(20, 184, 137, 0.28);
+  --iw-accent-green-soft: rgba(20, 184, 137, 0.12);
+  --iw-accent-red: #dc3d3d;
+  --iw-accent-red-glow: rgba(220, 61, 61, 0.25);
+  --iw-accent-amber: #d79118;
+  --iw-accent-amber-glow: rgba(215, 145, 24, 0.25);
+  --iw-status-live: #14b889;
+  --iw-status-live-glow: rgba(20, 184, 137, 0.38);
+  --iw-shell-grad-from: rgba(255, 255, 255, 0.96);
+  --iw-shell-grad-to: rgba(236, 243, 255, 0.94);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  background: transparent;
+  background-color: transparent;
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+  user-select: none;
+  color: white;
+  background: transparent;
+  background-color: transparent;
+  overflow: hidden;
+}
+
+#root {
+  width: 100%;
+  height: 100%;
+  min-height: 0;
+  margin: 0;
+  background: transparent;
+  background-color: transparent;
+  overflow: hidden;
+}
+
+::-webkit-scrollbar {
+  width: 3px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.14);
+}
+
+::selection {
+  background: rgba(75, 141, 248, 0.25);
+}
+
+button {
+  outline: none;
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+}
+
+button:focus-visible {
+  outline: 1px solid rgba(75, 141, 248, 0.5);
+  outline-offset: 1px;
+  border-radius: 4px;
+}
+
+@keyframes subtle-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
