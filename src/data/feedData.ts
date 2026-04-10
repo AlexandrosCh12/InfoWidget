@@ -78,7 +78,7 @@ export const feedItems: FeedItem[] = [
     timestamp: '18m ago',
     accent: 'green',
     icon: 'Cpu',
-    interestTags: ['Tech', 'AI / ML', 'Earnings'],
+    interestTags: ['Technology', 'AI / ML', 'Earnings'],
   },
   {
     id: '5',
@@ -114,7 +114,7 @@ export const feedItems: FeedItem[] = [
     timestamp: '31m ago',
     accent: 'amber',
     icon: 'Cpu',
-    interestTags: ['Tech', 'Energy', 'Startups'],
+    interestTags: ['Technology', 'Energy', 'Startups'],
   },
   {
     id: '7',
@@ -185,7 +185,9 @@ const INTEREST_MATCHERS: Record<string, (item: FeedItem) => boolean> = {
     item.type === 'market' || /s&p|fed|index|rate|oil|inventory/i.test(`${item.title} ${item.subtitle}`),
   Stocks: (item) => /stock|share|nyse|ipo|dividend|equity/i.test(`${item.title} ${item.subtitle}`),
   Crypto: (item) => item.type === 'crypto' || /bitcoin|btc|crypto/i.test(`${item.title} ${item.subtitle}`),
-  Tech: (item) => /nvidia|tech|semiconductor|battery|solid-state/i.test(`${item.title} ${item.subtitle}`),
+  // Merged from former 'Tech' entry + original 'Technology' entry
+  Technology: (item) =>
+    /apple|google|microsoft|meta|amazon|samsung|chip|software|hardware|nvidia|tech|semiconductor|battery|solid-state/i.test(`${item.title} ${item.subtitle}`),
   'World News': (item) =>
     item.type === 'news' || /fed|geopolitical|policy|who|marathon/i.test(`${item.title} ${item.subtitle}`),
   Economy: (item) => /fed|inflation|economy|yield|inventory/i.test(`${item.title} ${item.subtitle}`),
@@ -209,8 +211,6 @@ const INTEREST_MATCHERS: Record<string, (item: FeedItem) => boolean> = {
   Climate: (item) => /climate|carbon|emission|renewable|solar|wind|esg/i.test(`${item.title} ${item.subtitle}`),
   Defense: (item) =>
     /military|war|nato|army|navy|weapon|missile|defense|conflict/i.test(`${item.title} ${item.subtitle}`),
-  Technology: (item) =>
-    /apple|google|microsoft|meta|amazon|samsung|chip|software|hardware/i.test(`${item.title} ${item.subtitle}`),
 }
 
 /** Shared with `filterArticles` so onboarding interests match live API items the same way as demo data. */

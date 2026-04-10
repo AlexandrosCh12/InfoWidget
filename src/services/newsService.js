@@ -16,18 +16,21 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3001
  */
 export async function fetchTopHeadlines(pageSize = 30) {
   const categories = ['general', 'business', 'technology'];
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 12_000);
 
   try {
     const results = await Promise.all(
       categories.map(async (cat) => {
         const url = `${API_BASE_URL}/news?category=${cat}&pageSize=${pageSize}`;
-        const response = await fetch(url);
+        const response = await fetch(url, { signal: controller.signal });
         if (!response.ok) {
-          throw new Error(`Server responded with ${response.status}`);
+          throw new Error(`[${cat}] Server responded with ${response.status}`);
         }
         return response.json();
       })
     );
+    clearTimeout(timeoutId);
 
     const seen = new Set();
     const articles = [];
@@ -48,6 +51,7 @@ export async function fetchTopHeadlines(pageSize = 30) {
 
     return articles;
   } catch (error) {
+    clearTimeout(timeoutId);
     console.error('Failed to fetch news:', error);
     throw error;
   }

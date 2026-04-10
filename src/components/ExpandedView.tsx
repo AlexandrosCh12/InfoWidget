@@ -3,8 +3,7 @@
  * Wires live data (`useNews`) through interest filtering (`filterAndRankArticles`) and global selection (`useWidgetStore`).
  */
 import { motion, AnimatePresence } from 'framer-motion'
-import { useEffect } from 'react'
-// @ts-ignore
+import { useEffect, useMemo } from 'react'
 import { useNews } from '../hooks/useNews'
 import { filterAndRankArticles } from '../utils/filterArticles'
 import { useWidgetStore, type FeedItem } from '../store/widgetStore'
@@ -31,8 +30,19 @@ export function ExpandedView() {
   const sourceOverlay = useWidgetStore((s) => s.sourceOverlay)
   const interests = useWidgetStore((s) => s.settings.interests)
   // Data: `useNews` fetches + adapts API articles; `filterAndRankArticles` applies user interests from settings.
-  const { articles: rawArticles, loading, error } = useNews()
-  const articles = filterAndRankArticles(rawArticles, interests)
+  const activityLevel = useWidgetStore((s) => s.onboarding.activityLevel)
+
+  // Quiet → 10 min, Important Updates Only → 5 min, Active/Real-Time → 1 min
+  const pollIntervalMs =
+    activityLevel === 'Active / Real-Time' ? 60_000
+    : activityLevel === 'Quiet' ? 600_000
+    : 300_000
+
+  const { articles: rawArticles, loading, error } = useNews(pollIntervalMs)
+  const articles = useMemo(
+    () => filterAndRankArticles(rawArticles, interests),
+    [rawArticles, interests],
+  )
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -112,9 +122,11 @@ export function ExpandedView() {
                 exit="exit"
               >
                 {loading ? (
-                  <div>Loading news…</div>
+                  <div style={{ fontSize: 11, color: tokens.colors.textMuted }}>Loading news…</div>
                 ) : error ? (
-                  <div>Error: {error}</div>
+                  <div style={{ fontSize: 11, color: tokens.colors.textMuted }}>
+                    Unable to load news. Will retry shortly.
+                  </div>
                 ) : (
                   <>
                     <motion.p

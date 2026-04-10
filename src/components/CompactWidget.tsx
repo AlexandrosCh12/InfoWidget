@@ -2,9 +2,9 @@
  * Compact shell: always-visible strip with a few headline cards and a control rail.
  * Shows a subset of the same live feed as ExpandedView so users can skim without opening the full view.
  */
+import { useMemo } from 'react'
 import { motion } from 'framer-motion'
 import { getCompactCardCount } from '../data/feedData'
-// @ts-ignore
 import { useNews } from '../hooks/useNews'
 import { filterAndRankArticles } from '../utils/filterArticles'
 import { FeedCard } from './FeedCard'
@@ -27,8 +27,17 @@ export function CompactWidget() {
   const notifications = useWidgetStore((s) => s.settings.notifications)
   const expandToFeed = useWidgetStore((s) => s.expandToFeed)
   const interests = useWidgetStore((s) => s.settings.interests)
-  const { articles: rawArticles, loading, error } = useNews()
-  const articles = filterAndRankArticles(rawArticles, interests)
+  // Quiet → 10 min, Important Updates Only → 5 min, Active/Real-Time → 1 min
+  const pollIntervalMs =
+    activityLevel === 'Active / Real-Time' ? 60_000
+    : activityLevel === 'Quiet' ? 600_000
+    : 300_000
+
+  const { articles: rawArticles, loading, error } = useNews(pollIntervalMs)
+  const articles = useMemo(
+    () => filterAndRankArticles(rawArticles, interests),
+    [rawArticles, interests],
+  )
   const count = getCompactCardCount(activityLevel, widgetSize)
   // Only the first N ranked articles appear; N depends on quiet/active mode and widget size.
   const visibleItems = articles.slice(0, count)
@@ -75,9 +84,11 @@ export function CompactWidget() {
           animate="visible"
         >
           {loading ? (
-            <div>Loading news…</div>
+            <div style={{ fontSize: 11, color: tokens.colors.textMuted }}>Loading news…</div>
           ) : error ? (
-            <div>Error: {error}</div>
+            <div style={{ fontSize: 11, color: tokens.colors.textMuted }}>
+              Unable to load news. Will retry shortly.
+            </div>
           ) : (
             visibleItems.map((item: AdaptedNewsItem) => (
               <motion.div key={item.id} variants={staggerItem}>

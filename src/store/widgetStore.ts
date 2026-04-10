@@ -159,6 +159,13 @@ type OnboardingPersistenceAdapter = {
 const SETTINGS_KEY = 'infowidget.settings.v1'
 const ONBOARDING_KEY = 'infowidget.onboarding.v1'
 
+function isQuotaError(err: unknown): boolean {
+  return (
+    err instanceof DOMException &&
+    (err.name === 'QuotaExceededError' || err.name === 'NS_ERROR_DOM_QUOTA_REACHED')
+  )
+}
+
 /** Load/save widget preferences (interests, UI options) under a versioned localStorage key. */
 function createLocalStorageSettingsPersistence(): SettingsPersistenceAdapter {
   return {
@@ -167,15 +174,21 @@ function createLocalStorageSettingsPersistence(): SettingsPersistenceAdapter {
         const raw = localStorage.getItem(SETTINGS_KEY)
         if (!raw) return null
         return JSON.parse(raw) as WidgetSettings
-      } catch {
+      } catch (err) {
+        console.warn('InfoWidget: failed to load settings from storage.', err)
         return null
       }
     },
     save: (settings) => {
       try {
         localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings))
-      } catch {
-        /* ignore quota / private mode */
+      } catch (err) {
+        console.warn(
+          isQuotaError(err)
+            ? 'InfoWidget: storage quota exceeded — settings will not persist across sessions.'
+            : 'InfoWidget: settings could not be saved (possibly private/incognito mode).',
+          err,
+        )
       }
     },
   }
@@ -189,15 +202,21 @@ function createLocalStorageOnboardingPersistence(): OnboardingPersistenceAdapter
         const raw = localStorage.getItem(ONBOARDING_KEY)
         if (!raw) return null
         return JSON.parse(raw) as OnboardingState
-      } catch {
+      } catch (err) {
+        console.warn('InfoWidget: failed to load onboarding state from storage.', err)
         return null
       }
     },
     save: (onboarding) => {
       try {
         localStorage.setItem(ONBOARDING_KEY, JSON.stringify(onboarding))
-      } catch {
-        /* ignore */
+      } catch (err) {
+        console.warn(
+          isQuotaError(err)
+            ? 'InfoWidget: storage quota exceeded — onboarding state will not persist.'
+            : 'InfoWidget: onboarding state could not be saved (possibly private/incognito mode).',
+          err,
+        )
       }
     },
   }
@@ -209,13 +228,13 @@ const onboardingSnapshot = onboardingPersistence.load() ?? defaultOnboarding
 
 /** Maps onboarding "purpose" picks to concrete interest labels merged into settings on complete. */
 const PURPOSE_TO_INTERESTS: Record<OnboardingPurpose, string[]> = {
-  'General Updates': ['World News', 'Tech', 'Economy'],
+  'General Updates': ['World News', 'Technology', 'Economy'],
   'Day Trading': ['Markets', 'Earnings', 'Forex'],
   Crypto: ['Crypto', 'Markets'],
   Investing: ['Markets', 'Economy', 'World News'],
   'Business News': ['World News', 'Economy', 'Markets'],
-  'AI/Tech': ['Tech', 'AI / ML', 'Startups'],
-  Marketing: ['Startups', 'Tech'],
+  'AI/Tech': ['Technology', 'AI / ML', 'Startups'],
+  Marketing: ['Startups', 'Technology'],
   Custom: [],
 }
 
